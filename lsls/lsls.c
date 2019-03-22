@@ -39,7 +39,7 @@ int main(int argc, char **argv)
     // };
 
     if (pDirent->d_type == 4) {
-      printf ("%8s %16s\n","DIR", pDirent->d_name);
+      printf ("%12s   %s\n","DIR", pDirent->d_name);
     } else {
       struct stat buf;
       int pl = strlen(path);
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
       strcat(np, pDirent->d_name);
 
       stat(np, &buf);
-      printf("%8lld %16s\n", buf.st_size, pDirent->d_name);
+      printf("%12lld   %s\n", buf.st_size, pDirent->d_name);
     }
   }
 
