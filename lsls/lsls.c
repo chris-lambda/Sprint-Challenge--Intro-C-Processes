@@ -1,25 +1,29 @@
 #include <stdio.h>
 #include <dirent.h>
+#include <sys/stat.h>
+#include <string.h>
 
 /**
  * Main
  */
 int main(int argc, char **argv)
 {
-  int len;
   struct dirent *pDirent;
   DIR *pDir;
 
+  char *path;
+
   // Parse command line
   if (argc < 2) {
-      printf ("./lsls <dirname>\n");
-      return 1;
+    path = "./";
+  } else {
+    path = argv[1];
   }
 
   // Open directory
-  pDir = opendir (argv[1]);
+  pDir = opendir (path);
   if (pDir == NULL) {
-      printf ("Cannot open directory '%s'\n", argv[1]);
+      printf ("Cannot open directory '%s'\n", path);
       return 1;
   }
 
@@ -37,8 +41,19 @@ int main(int argc, char **argv)
     if (pDirent->d_type == 4) {
       printf ("<DIR> %s\n", pDirent->d_name);
     } else {
+      struct stat buf;
+      int pl = strlen(path);
+      int fl = strlen(pDirent->d_name);
+      char np[pl + fl];
 
-      printf ("[%u] %s\n", pDirent->d_type,pDirent->d_name);
+      strcpy(np, path);
+      if (strcmp( &path[pl-1], "/") != 0) {
+        strcat(np, "/");
+      }
+      strcat(np, pDirent->d_name);
+
+      stat(np, &buf);
+      printf("%lld %s\n", buf.st_size, pDirent->d_name);
     }
   }
 
